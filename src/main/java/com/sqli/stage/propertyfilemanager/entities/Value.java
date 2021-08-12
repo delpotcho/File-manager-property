@@ -8,12 +8,8 @@ import javax.persistence.MapsId;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-//@Table(name = "VALUE")
-//@AssociationOverrides({ @AssociationOverride(name = "propertieId", joinColumns = @JoinColumn(name = "PROPERTIE_ID")),
-//	@AssociationOverride(name = "statusId", joinColumns = @JoinColumn(name = "STATUS_ID")),
-//@AssociationOverride(name = "parametreId", joinColumns = @JoinColumn(name = "PARAMETRE_ID")) })
-
 @Entity
+
 public class Value {
 
 	private String name;
