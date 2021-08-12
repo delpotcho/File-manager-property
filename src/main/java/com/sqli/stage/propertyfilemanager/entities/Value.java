@@ -1,27 +1,39 @@
 package com.sqli.stage.propertyfilemanager.entities;
 
-import java.io.Serializable;
-
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+//@Table(name = "VALUE")
+//@AssociationOverrides({ @AssociationOverride(name = "propertieId", joinColumns = @JoinColumn(name = "PROPERTIE_ID")),
+//	@AssociationOverride(name = "statusId", joinColumns = @JoinColumn(name = "STATUS_ID")),
+//@AssociationOverride(name = "parametreId", joinColumns = @JoinColumn(name = "PARAMETRE_ID")) })
 
 @Entity
-public class Value implements Serializable {
+public class Value {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	private String name;
+	@Autowired
 	@EmbeddedId
+	private ValueId valueId;
+
 	@ManyToOne
+	@MapsId("parametreId")
+	@JoinColumn(name = "parametre_id")
 	private Parametre parametre;
-	@EmbeddedId
+
 	@ManyToOne
-	private Statut statut;
-	@EmbeddedId
+	@MapsId("statusId")
+	@JoinColumn(name = "status_id")
+	private Status status;
+
 	@ManyToOne
+	@MapsId("propertieId")
+	@JoinColumn(name = "propertie_id")
 	private Propertie propertie;
 
 	public String getName() {
@@ -32,12 +44,28 @@ public class Value implements Serializable {
 		this.name = name;
 	}
 
-	public Statut getStatut() {
-		return statut;
+	public ValueId getValueId() {
+		return valueId;
 	}
 
-	public void setStatut(Statut statut) {
-		this.statut = statut;
+	public void setValueId(ValueId valueId) {
+		this.valueId = valueId;
+	}
+
+	public Parametre getParametre() {
+		return parametre;
+	}
+
+	public void setParametre(Parametre parametre) {
+		this.parametre = parametre;
+	}
+
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
 	}
 
 	public Propertie getPropertie() {

@@ -13,17 +13,18 @@ public class Parametre {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+
+	private long parametreId;
 	private String parametrekey;
 	@OneToMany(mappedBy = "parametre")
 	private List<Value> values;
 
 	public long getId() {
-		return id;
+		return parametreId;
 	}
 
 	public void setId(long id) {
-		this.id = id;
+		this.parametreId = id;
 	}
 
 	public List<Value> getValues() {

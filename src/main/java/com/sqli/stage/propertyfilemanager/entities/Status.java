@@ -9,21 +9,22 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 @Entity
-public class Statut {
+public class Status {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+
+	private long statusId;
 	private String type;
-	@OneToMany(mappedBy = "statut")
+	@OneToMany(mappedBy = "status")
 	private List<Value> values;
 
 	public long getId() {
-		return id;
+		return statusId;
 	}
 
 	public void setId(long id) {
-		this.id = id;
+		this.statusId = id;
 	}
 
 	public String getType() {

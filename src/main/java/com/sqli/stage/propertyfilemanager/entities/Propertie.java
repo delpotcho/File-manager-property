@@ -14,7 +14,8 @@ public class Propertie {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+
+	private long properieId;
 	private String name;
 
 	@ManyToOne
@@ -23,11 +24,11 @@ public class Propertie {
 	private List<Value> values;
 
 	public long getId() {
-		return id;
+		return properieId;
 	}
 
 	public void setId(long id) {
-		this.id = id;
+		this.properieId = id;
 	}
 
 	public File getFile() {
