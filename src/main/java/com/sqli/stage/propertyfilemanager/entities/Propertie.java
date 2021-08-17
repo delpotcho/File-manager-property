@@ -17,6 +17,7 @@ public class Propertie {
 
 	private long properieId;
 	private String name;
+	private String type;
 
 	@ManyToOne
 	private File file;
@@ -54,5 +55,23 @@ public class Propertie {
 	public void setValues(List<Value> values) {
 		this.values = values;
 	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public Propertie(long properieId, String name, String type, File file, List<Value> values) {
+		super();
+		this.properieId = properieId;
+		this.name = name;
+		this.type = type;
+		this.file = file;
+		this.values = values;
+	}
+	
 
 }

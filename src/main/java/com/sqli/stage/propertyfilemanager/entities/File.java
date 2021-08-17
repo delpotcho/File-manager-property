@@ -52,4 +52,12 @@ public class File {
 		this.date = date;
 	}
 
+	public File(long id, String name, Date date, List<Propertie> properties) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.date = date;
+		this.properties = properties;
+	}
+
 }

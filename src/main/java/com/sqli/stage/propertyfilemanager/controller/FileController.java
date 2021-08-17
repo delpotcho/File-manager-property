@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,8 +25,9 @@ public class FileController {
 		Map<String, List<String>> zipZ = traitementFile.scannedFile(file);
 
 		Map<String, Map<String, String>> Listfinal = traitementFile.splitListe(zipZ);
+		traitementFile.addProtertieCommonToSpecifique(Listfinal);
 
-		for (Iterator<Entry<String, Map<String, String>>> iterator = Listfinal.entrySet().iterator(); iterator
+	/*	for (Iterator<Entry<String, Map<String, String>>> iterator = Listfinal.entrySet().iterator(); iterator
 				.hasNext();) {
 			Entry<String, Map<String, String>> mapentry = iterator.next();
 			System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++");
@@ -41,7 +41,7 @@ public class FileController {
 			}
 		}
 		
-		
+		*/
 		
 		
 		

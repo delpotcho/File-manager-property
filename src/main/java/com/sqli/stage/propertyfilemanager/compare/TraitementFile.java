@@ -3,6 +3,7 @@ package com.sqli.stage.propertyfilemanager.compare;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -66,6 +67,57 @@ public class TraitementFile {
 		 * s.split("=")) .collect(Collectors.toMap(s -> s[0], s -> s[1]));
 		 * listFinal.put(name, Listzip); } return listFinal ;
 		 */
+
+	}
+
+	public Map<String, Map<String, String>> addProtertieCommonToSpecifique(Map<String, Map<String, String>> listFile) {
+		Map<String, Map<String, String>> communFile = new HashMap<String, Map<String, String>>();
+		Map<String, Map<String, String>> specFile = new HashMap<String, Map<String, String>>();
+		String name = "commun.properties";
+		
+		
+		
+		
+		
+		
+		
+		for (Map.Entry mapentry : listFile.entrySet()) {
+			if (mapentry.getKey().equals(name)) {
+				communFile.put(mapentry.getKey().toString(), (Map<String, String>) mapentry.getValue());
+			} else {
+				specFile.put(mapentry.getKey().toString(), (Map<String, String>) mapentry.getValue());
+
+			}
+
+		}
+		System.out.println(" commun property  : " + communFile);
+		System.out.println(" spec property  : " + specFile);
+
+		for (Map.Entry mapFirst : communFile.entrySet()) {
+			Map<String, String> xy = (Map<String, String>) mapFirst.getValue();
+			for (Map.Entry mapfinal : xy.entrySet()) {
+				for (Map.Entry mapspec : specFile.entrySet()) {
+
+					Map<String, String> xx = (Map<String, String>) mapspec.getValue();
+
+					if (xx.containsKey(mapfinal.getKey()) ) {
+						//System.out.println(" La clé existe " + mapfinal.getKey() + " sa valeur " + mapfinal.getValue());
+						//System.out.println(mapspec.getKey());
+
+					}else
+					{
+						System.out.println(" La clé n'existe pas " + mapfinal.getKey()  );
+						System.out.println(mapspec.getKey());
+						xx.put(mapfinal.getKey().toString(),mapfinal.getValue().toString());
+						
+					}
+				}
+			}
+		}
+		System.out.println("+++++++++++++++++++++++++ Final +++++++++++++++++++");
+		System.out.println(" commun property  : " + communFile);
+		System.out.println(" spec property  : " + specFile);
+		return null;
 
 	}
 
