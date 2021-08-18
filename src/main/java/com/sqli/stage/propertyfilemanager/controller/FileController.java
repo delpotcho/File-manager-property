@@ -1,10 +1,8 @@
 package com.sqli.stage.propertyfilemanager.controller;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +23,10 @@ public class FileController {
 		Map<String, List<String>> zipZ = traitementFile.scannedFile(file);
 
 		Map<String, Map<String, String>> Listfinal = traitementFile.splitListe(zipZ);
-		traitementFile.addProtertieCommonToSpecifique(Listfinal);
+		Map<String, Map<String, String>> xx= 	traitementFile.addProtertieCommonToSpecifique(Listfinal);
+	
+		traitementFile.CompareFileProperties(xx);
+		
 
 	/*	for (Iterator<Entry<String, Map<String, String>>> iterator = Listfinal.entrySet().iterator(); iterator
 				.hasNext();) {
