@@ -24,8 +24,8 @@ public class FileController {
 
 		Map<String, Map<String, String>> Listfinal = traitementFile.splitListe(zipZ);
 		Map<String, Map<String, String>> xx= 	traitementFile.addProtertieCommonToSpecifique(Listfinal);
-	
-		traitementFile.CompareFileProperties(xx);
+
+	traitementFile.CompareFileProperties(xx);
 		
 
 	/*	for (Iterator<Entry<String, Map<String, String>>> iterator = Listfinal.entrySet().iterator(); iterator

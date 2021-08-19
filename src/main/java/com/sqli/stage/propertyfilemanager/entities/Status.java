@@ -34,4 +34,28 @@ public class Status {
 	public void setType(String type) {
 		this.type = type;
 	}
+
+	public long getStatusId() {
+		return statusId;
+	}
+
+	public void setStatusId(long statusId) {
+		this.statusId = statusId;
+	}
+
+	public List<Value> getValues() {
+		return values;
+	}
+
+	public void setValues(List<Value> values) {
+		this.values = values;
+	}
+
+	public Status(long statusId, String type, List<Value> values) {
+		super();
+		this.statusId = statusId;
+		this.type = type;
+		this.values = values;
+	}
+	
 }

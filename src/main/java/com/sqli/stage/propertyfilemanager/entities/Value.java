@@ -72,4 +72,13 @@ public class Value {
 		this.propertie = propertie;
 	}
 
+	public Value(String name, ValueId valueId, Parametre parametre, Status status, Propertie propertie) {
+		super();
+		this.name = name;
+		this.valueId = valueId;
+		this.parametre = parametre;
+		this.status = status;
+		this.propertie = propertie;
+	}
+
 }

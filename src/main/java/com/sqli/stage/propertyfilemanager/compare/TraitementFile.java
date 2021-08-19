@@ -13,8 +13,12 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.sqli.stage.propertyfilemanager.entities.File;
+import com.sqli.stage.propertyfilemanager.entities.Propertie;
 
 @Component
 public class TraitementFile {
@@ -111,40 +115,57 @@ public class TraitementFile {
 		 * System.out.println("+++++++++++++++++++++++++ Final +++++++++++++++++++");
 		 * System.out.println(" commun property  : " + communFile);
 		 * System.out.println(" spec property  : " + specFile);
+		 * 
 		 */
+
 		return specFile;
 	}
 
 	public void CompareFileProperties(Map<String, Map<String, String>> listFileProperty) {
-		Map<String, String> general = new HashMap<String, String>();
-		listFileProperty.values().forEach(map -> general.putAll(map));
-		Iterator<Entry<String, String>> iteratorGeneral = general.entrySet().iterator();
-		System.out.println(general);
-		System.out.println("+++++++++++++++++++");
-		for (Map<String, String> mapentry : listFileProperty.values()) {
-			Iterator<Entry<String, String>> iteratorSpec = mapentry.entrySet().iterator();
-			System.out.println(mapentry);
-			while (iteratorGeneral.hasNext() && iteratorSpec.hasNext()) {
-				Entry<String, String> g = (Entry<String, String>) iteratorGeneral.next();
-				Entry<String, String> c = (Entry<String, String>) iteratorSpec.next();
+		System.out.println("g" + listFileProperty);
+		Entry<String, Map<String, String>> spec1 = null;
+		Entry<String, Map<String, String>> spec2 = null;
+		//listFileProperty.forEach((v,k)-> {k.forEach((y,z)->{ z.compareTo(z.)});
+		
+		Iterator<Entry<String, Map<String, String>>> iteratorfile = listFileProperty.entrySet().iterator();
+		while (iteratorfile.hasNext()) {
+			spec2 = iteratorfile.next();
+			spec1 = iteratorfile.next();
 
-				String newc = (String) c.getKey();
+			System.out.println("spec1 " + spec1);
+			System.out.println("spec2 " + spec2);
 
-				if (!g.getKey().toString().trim().equals(newc)) {
-
-					System.out.println("les oublies : " + g.getKey());
-
+			break;
+		}
+		Map<String, String> specValue1 = spec1.getValue();
+		Map<String, String> specValue2 = spec2.getValue();
+//specValue1.forEach((v,k)->
+//{if(specValue2.containsKey(v)){
+//	System.out.println("ok");
+//}
+//});
+		for (Map.Entry spec1Param : specValue1.entrySet()) {
+			// verifie les key de spec 1 dans list spec2
+			if (specValue2.containsKey(spec1Param.getKey())) {
+				if (!specValue2.get(spec1Param.getKey()).equals(spec1Param.getValue())) {
+					System.out.println(
+							"la valure different  " + spec1Param.getValue() + " de key " + spec1Param.getKey());
 				}
 
-				if (!g.getValue().toString().trim().equals(c.getValue().toString().trim())) {
+			} else {
+				System.out.println("le parametre oublie'" + spec1Param.getKey() + "' dans " + spec2.getKey());
+			}
+		}
+		System.out.println("+++++++++++++++++++++++++++++++++++++++");
+		for (Map.Entry spec2Param : specValue2.entrySet()) { //
+			if (!specValue1.containsKey(spec2Param.getKey())) {
+				System.out.println("le parametre oublie'" + spec2Param.getKey() + "' dans " + spec1.getKey());
 
-					System.out.println(" les valeur different :" + g.getValue() + " key :" + g.getKey());
-				}
+			} else {
 
 			}
 
 		}
-
 	}
 
 	public List<String> scannerListe(Map<String, ZipInputStream> mapZis, String namefile) {
