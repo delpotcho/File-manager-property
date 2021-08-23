@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Status {
 
@@ -16,6 +18,7 @@ public class Status {
 
 	private long statusId;
 	private String type;
+	@JsonIgnore
 	@OneToMany(mappedBy = "status")
 	private List<Value> values;
 
@@ -51,11 +54,17 @@ public class Status {
 		this.values = values;
 	}
 
-	public Status(long statusId, String type, List<Value> values) {
+	public Status(long statusId, String type) {
 		super();
 		this.statusId = statusId;
 		this.type = type;
-		this.values = values;
+
+	}
+
+	public Status() {
+		super();
+		
 	}
 	
+
 }

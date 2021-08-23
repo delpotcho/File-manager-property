@@ -6,16 +6,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 
 public class Value {
 
 	private String name;
-	@Autowired
+
 	@EmbeddedId
-	private ValueId valueId;
+	private ValueId valueId = new ValueId();
 
 	@ManyToOne
 	@MapsId("parametreId")
@@ -26,7 +26,7 @@ public class Value {
 	@MapsId("statusId")
 	@JoinColumn(name = "status_id")
 	private Status status;
-
+	@JsonIgnore
 	@ManyToOne
 	@MapsId("propertieId")
 	@JoinColumn(name = "propertie_id")
@@ -72,13 +72,18 @@ public class Value {
 		this.propertie = propertie;
 	}
 
-	public Value(String name, ValueId valueId, Parametre parametre, Status status, Propertie propertie) {
+	public Value(String name, Parametre parametre, Status status, Propertie propertie) {
 		super();
 		this.name = name;
-		this.valueId = valueId;
+
 		this.parametre = parametre;
 		this.status = status;
 		this.propertie = propertie;
+	}
+
+	public Value() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
 }

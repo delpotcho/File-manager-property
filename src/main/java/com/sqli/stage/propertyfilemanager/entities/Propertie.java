@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Propertie {
 
@@ -18,7 +20,7 @@ public class Propertie {
 	private long properieId;
 	private String name;
 	private String type;
-
+	@JsonIgnore
 	@ManyToOne
 	private File file;
 	@OneToMany(mappedBy = "propertie")
@@ -64,13 +66,18 @@ public class Propertie {
 		this.type = type;
 	}
 
-	public Propertie(long properieId, String name, String type, File file, List<Value> values) {
+	public Propertie(long properieId, String name, String type, File file) {
 		super();
 		this.properieId = properieId;
 		this.name = name;
 		this.type = type;
 		this.file = file;
-		this.values = values;
+	
+	}
+
+	public Propertie() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 	
 

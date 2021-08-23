@@ -9,8 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import org.springframework.stereotype.Component;
-
 @Entity
 public class File {
 	@Id
@@ -52,6 +50,19 @@ public class File {
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	public File(long id, String name, Date date) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.date = date;
+
+	}
+
+	public File() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	public File(long id, String name, Date date, List<Propertie> properties) {

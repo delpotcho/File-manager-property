@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Parametre {
 
@@ -26,7 +28,7 @@ public class Parametre {
 	public void setId(long id) {
 		this.parametreId = id;
 	}
-
+	@JsonIgnore
 	public List<Value> getValues() {
 		return values;
 	}
@@ -41,6 +43,18 @@ public class Parametre {
 
 	public void setParametrekey(String parametrekey) {
 		this.parametrekey = parametrekey;
+	}
+
+	public Parametre() {
+		super();
+		
+	}
+
+	public Parametre(long parametreId, String parametrekey) {
+		super();
+		this.parametreId = parametreId;
+		this.parametrekey = parametrekey;
+
 	}
 
 }
