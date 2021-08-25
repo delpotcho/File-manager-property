@@ -77,7 +77,7 @@ public class Propertie {
 
 	public Propertie() {
 		super();
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 

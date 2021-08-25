@@ -1,149 +1,258 @@
 package com.sqli.stage.propertyfilemanager.compare;
 
 import java.io.BufferedInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Scanner;
-import java.util.stream.Collectors;
+import java.util.Properties;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sqli.stage.propertyfilemanager.dto.FileRepository;
+import com.sqli.stage.propertyfilemanager.dto.ParametreRepository;
+import com.sqli.stage.propertyfilemanager.dto.PropertieRepository;
+import com.sqli.stage.propertyfilemanager.dto.StatusRepository;
+import com.sqli.stage.propertyfilemanager.dto.ValueRepository;
+import com.sqli.stage.propertyfilemanager.entities.File;
+import com.sqli.stage.propertyfilemanager.entities.Parametre;
+import com.sqli.stage.propertyfilemanager.entities.Propertie;
+import com.sqli.stage.propertyfilemanager.entities.Status;
+import com.sqli.stage.propertyfilemanager.entities.Value;
+
 @Component
 public class TraitementFile {
-	@Value("${propertie.commun.name}")
-	String nameFileProperty;
+
+	@org.springframework.beans.factory.annotation.Value("${propertie.commun.name}")
+	private String nameFilePropertyCommun;
+	@Autowired
+	private PropertieRepository propertieRepository;
+	@Autowired
+	private ParametreRepository parametreRepository;
+	@Autowired
+	private StatusRepository statusRepository;
+	@Autowired
+	private ValueRepository valueRepository;
+
 
 	public TraitementFile() {
 		super();
 
 	}
+
 	/*
 	 * 
 	 * method for scanned file property and ignore spacing and comments .
+	 * 
 	 */
 
-	public Map<String, List<String>> scannedFile(MultipartFile file) throws IOException {
+	public Map<String, Properties> scannedFile(MultipartFile file) throws IOException {
 		BufferedInputStream bis = new BufferedInputStream(file.getInputStream());
 		ZipInputStream zis = new ZipInputStream(bis);
-		ZipEntry ze = null;
-		Scanner sc;
-
-		Map<String, List<String>> zipZ = new HashMap<String, List<String>>();
-		while ((ze = zis.getNextEntry()) != null) {
-			sc = new Scanner(zis);
-			List<String> params = new ArrayList<String>();
-
-			while (sc.hasNextLine()) {
-				String par = sc.nextLine();
-				if (!par.equals("") && (!par.matches("#(.*)"))) {
-					params.add(par);
+		ZipEntry zipEntry = zis.getNextEntry();
+		byte[] buffer = new byte[1024];
+		Properties filePropertie;
+		Map<String, Properties> listPropertie = new HashMap<String, Properties>();
+		while (zipEntry != null) {
+			String filePath = "C:/Users/pc 12/eclipse-workspace/PropertyFileManager/uploadFile" + java.io.File.separator
+					+ zipEntry.getName();
+			filePropertie = new Properties();
+			filePropertie.load(zis);
+			// System.out.println(filePropertie.toString());
+			listPropertie.put(zipEntry.getName(), filePropertie);
+			if (!zipEntry.isDirectory()) {
+				FileOutputStream fos = new FileOutputStream(filePath);
+				int len;
+				while ((len = zis.read(buffer)) > 0) {
+					fos.write(buffer, 0, len);
 				}
-			}
-			zipZ.put(ze.getName(), params);
-
-		}
-
-		return zipZ;
-	}
-	/*
-	 * 
-	 * method split value property files .
-	 */
-
-	public Map<String, Map<String, String>> splitListe(Map<String, List<String>> listproperty) {
-		Map<String, Map<String, String>> listFinal = new HashMap<String, Map<String, String>>();
-		Iterator<Entry<String, List<String>>> iterator = listproperty.entrySet().iterator();
-		while (iterator.hasNext()) {
-
-			Entry<String, List<String>> mapentry = iterator.next();
-			String nameFileZip = mapentry.getKey();
-			List<String> list = mapentry.getValue();
-			Map<String, String> listValueFileZip = list.stream().map(s -> s.split("="))
-					.collect(Collectors.toMap(s -> s[0], s -> s[1]));
-			listFinal.put(nameFileZip, listValueFileZip);
-		}
-		return listFinal;
-
-	}
-	/*
-	 * 
-	 * 
-	 */
-
-	public Map<String, Map<String, String>> addProtertieCommonToSpecifique(Map<String, Map<String, String>> listFile) {
-		Map<String, String> communFile = new HashMap<String, String>();
-		Map<String, Map<String, String>> specFile = new HashMap<String, Map<String, String>>();
-
-		Iterator<Entry<String, Map<String, String>>> iteratorListFile = listFile.entrySet().iterator();
-		while (iteratorListFile.hasNext()) {
-			Entry<String, Map<String, String>> mapentry = iteratorListFile.next();
-			if (mapentry.getKey().equals(nameFileProperty)) {
-				communFile.putAll(mapentry.getValue());
+				fos.close();
 			} else {
-				specFile.put(mapentry.getKey(), mapentry.getValue());
+				java.io.File dir = new java.io.File(filePath);
+				dir.mkdir();
 			}
+			zis.closeEntry();
+			zipEntry = zis.getNextEntry();
 		}
+		zis.closeEntry();
+		zis.close();
+		return listPropertie;
 
-		// System.out.println(" commun property : " + communFile);
-		// System.out.println(" spec property : " + specFile);
-
-		Iterator<Entry<String, String>> iteratorCommunFile = communFile.entrySet().iterator();
-		while (iteratorCommunFile.hasNext()) {
-
-			Entry<String, String> mapFirst = iteratorCommunFile.next();
-
-			Iterator<Entry<String, Map<String, String>>> iterator2 = specFile.entrySet().iterator();
-			while (iterator2.hasNext()) {
-				Entry<String, Map<String, String>> mapspec = iterator2.next();
-				Map<String, String> xx = mapspec.getValue();
-
-				if (!xx.containsKey(mapFirst.getKey())) {
-
-					xx.put(mapFirst.getKey(), mapFirst.getValue());
-				}
-			}
-		}
-		/*
-		System.out.println("+++++++++++++++++++++++++ Final +++++++++++++++++++");
-		System.out.println(" commun property  : " + communFile);
-		System.out.println(" spec property  : " + specFile);
-*/
-		return specFile;
 	}
-	/*
-	 * 
-	 * Compare specific files
-	 */
 
-	public void compareFileProperties(Map<String, Map<String, String>> listFileProperty) {
 
-		listFileProperty.forEach((key1, value1) -> {
+	public Map<String, Properties> addProtertieCommonToSpecifique(Map<String, Properties> listFile) {
 
-			listFileProperty.forEach((key2, value2) -> {
+		Map<String, Properties> propertyCommun = new HashMap<String, Properties>();
+		Map<String, Properties> propertySpec = new HashMap<String, Properties>();
+		listFile.forEach((k, V) -> {
+			if (k.equals(nameFilePropertyCommun)) {
+				propertyCommun.put(k, V);
+			} else {
+				propertySpec.put(k, V);
+				List<Propertie> xx = propertieRepository.findAll();
+				xx.forEach((s) -> {
+					s.getId();
+				});
+			}
+		});
+		propertyCommun.forEach((K, V) -> {
+			V.forEach((k, v) -> {
 
-				if (!key1.equals(key2)) {
+				propertySpec.forEach((kspec, Vspec) -> {
+					if (!Vspec.containsKey(k)) {
+						Vspec.put(k, v);
 
-					value2.forEach((keyValue2, valueValue2) -> {
+					}
+				});
+			});
+		});
+//		System.out.println("++++++++++++++++++apres ++++++++++++++");
+//		System.out.println(propertySpec);
+		return propertySpec;
 
-						if (value1.containsKey(keyValue2)) {
+	}
 
-							if (!value1.get(keyValue2).equals(valueValue2)) {
+	public List<Propertie> addPropertySpec(Map<String, Properties> listSpec, File folder) {
 
-								System.out.println(" la valure different ' " + valueValue2 + " ' de key " + keyValue2
-										+ " dans file" + key2);
+		List<Propertie> listePropertie = new ArrayList<Propertie>();
+		listSpec.forEach((k, v) -> {
+			Propertie p = new Propertie(0, k, "spec", folder);
+			propertieRepository.save(p);
+			listePropertie.add(p);
+		});
+		return listePropertie;
+	}
+
+	public List<Parametre> addParametre(Map<String, Properties> listFileProperty) {
+		Set<String> listeParametreGlobale = new HashSet<String>();
+		List<Parametre> listParametreEntities = new ArrayList<Parametre>();
+		listFileProperty.values().forEach((K) -> {
+			K.forEach((k, v) -> {
+				listeParametreGlobale.add(k.toString());
+			});
+
+		});
+		listeParametreGlobale.forEach((s) -> {
+			Parametre parametre = new Parametre(0, s);
+			parametreRepository.save(parametre);
+			listParametreEntities.add(parametre);
+
+		});
+
+		return listParametreEntities;
+	}
+
+//
+////	
+//	  Compare specific files
+//	  
+//	 
+	Propertie propertieEntitie;
+	Parametre parametreEntitie;
+
+	public void compareFile(Map<String, Properties> listFileProperty, List<Propertie> prop, List<Parametre> param) {
+
+		Status statusDiff = new Status(0, "differant");
+		statusRepository.save(statusDiff);
+
+		Status statusNormal = new Status(0, "normal");
+		statusRepository.save(statusNormal);
+		Status statusOublie = new Status(0, "oublie");
+		statusRepository.save(statusOublie);
+
+		listFileProperty.forEach((nomFileSpec, propertieSpec) -> {
+
+			listFileProperty.forEach((nomFileSpec2, propertieSpec2) -> {
+
+				if (!nomFileSpec.equals(nomFileSpec2)) {
+
+					propertieSpec2.forEach((keyPropertie2, valuePropertie2) -> {
+
+						// System.out.println("nom propertie " + nomFileSpec2 + " de parametre " +
+						// keyPropertie2
+						// + " sa valeur " + valuePropertie2);
+
+						if (propertieSpec.containsKey(keyPropertie2)) {
+
+							if (!propertieSpec.get(keyPropertie2).equals(valuePropertie2)) {
+								prop.forEach((p) -> {
+									if (p.getName().equals(nomFileSpec2)) {
+										propertieEntitie = new Propertie();
+										propertieEntitie = p;
+									}
+								});
+								param.forEach((par) -> {
+
+									if (par.getParametrekey().equals(keyPropertie2)) {
+										parametreEntitie = new Parametre();
+										parametreEntitie = par;
+									}
+								});
+								// System.out.println("parametreEntitie "+ parametreEntitie.getParametrekey());
+								// System.out.println("propertieEntitie "+ propertieEntitie.getName());
+								Value v = new Value(valuePropertie2.toString(), parametreEntitie, statusDiff,
+										propertieEntitie);
+								valueRepository.save(v);
+
+								// System.out.println(" la valure different ' " + valuePropertie2 + " ' de key "
+								// +
+								// keyPropertie2
+								// + " dans file" + nomFileSpec2);
+
+							} else {
+								prop.forEach((p) -> {
+									if (p.getName().equals(nomFileSpec2)) {
+										propertieEntitie = new Propertie();
+										propertieEntitie = p;
+									}
+								});
+								param.forEach((par) -> {
+
+									if (par.getParametrekey().equals(keyPropertie2)) {
+										parametreEntitie = new Parametre();
+										parametreEntitie = par;
+									}
+								});
+								// System.out.println("parametreEntitie "+ parametreEntitie.getParametrekey());
+								// System.out.println("propertieEntitie "+ propertieEntitie.getName());
+								Value v = new Value(valuePropertie2.toString(), parametreEntitie, statusNormal,
+										propertieEntitie);
+								valueRepository.save(v);
+
 							}
 
 						} else {
-							System.out.println("le parametre oublie'" + keyValue2 + "' dans " + key1);
+							prop.forEach((p) -> {
+								if (p.getName().equals(nomFileSpec2)) {
+									propertieEntitie = new Propertie();
+									propertieEntitie = p;
+								}
+							});
+							param.forEach((par) -> {
+
+								if (par.getParametrekey().equals(keyPropertie2)) {
+									parametreEntitie = new Parametre();
+									parametreEntitie = par;
+								}
+							});
+							// System.out.println("parametreEntitie "+ parametreEntitie.getParametrekey());
+							// System.out.println("propertieEntitie "+ propertieEntitie.getName());
+							Value v = new Value(valuePropertie2.toString(), parametreEntitie, statusOublie,
+									propertieEntitie);
+							valueRepository.save(v);
+
+							// System.out.println("le parametre oublie'" + keyPropertie2 + "' dans " +
+							// nomFileSpec);
+//
 						}
 					});
 				}

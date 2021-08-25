@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Value {
 
 	private String name;
-
+	@JsonIgnore
 	@EmbeddedId
 	private ValueId valueId = new ValueId();
 

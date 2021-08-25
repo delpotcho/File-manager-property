@@ -15,8 +15,8 @@ public class Status {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-
 	private long statusId;
+	
 	private String type;
 	@JsonIgnore
 	@OneToMany(mappedBy = "status")
