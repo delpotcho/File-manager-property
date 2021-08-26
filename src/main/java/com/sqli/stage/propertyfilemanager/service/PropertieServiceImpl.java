@@ -1,52 +1,57 @@
 package com.sqli.stage.propertyfilemanager.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.sqli.stage.propertyfilemanager.dto.PropertieRepository;
 import com.sqli.stage.propertyfilemanager.entities.File;
 import com.sqli.stage.propertyfilemanager.entities.Propertie;
 @Service
-public class PropertieServiceImpl implements PropertieService {
+public  class PropertieServiceImpl implements PropertieService {
 	@Autowired
 PropertieRepository propertieRepository;
-	@org.springframework.beans.factory.annotation.Value("${propertie.commun.name}")
+	
+	@Value("${propertie.commun.name}")
 	private String nameFilePropertyCommun;
 
 	@Override
 	public List<Propertie> getAllPropertie() {
-		// TODO Auto-generated method stub
-		return null;
+
+		return propertieRepository.findAll();
 	}
 
 	@Override
 	public Propertie getPropertieById(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+
+		return propertieRepository.getById(id);
 	}
 
 	@Override
 	public void deletePropertie(Propertie propertie) {
-		// TODO Auto-generated method stub
+		propertieRepository.delete(propertie);
 		
 	}
 
 	@Override
-	public void createPropertie(Propertie propertie) {
-		// TODO Auto-generated method stub
+	public void addPropertie(Propertie propertie) {
+  propertieRepository.save(propertie);
+  
 		
 	}
 
 	@Override
 	public void updatePropertie(Propertie propertie) {
-		// TODO Auto-generated method stub
+propertieRepository.save(propertie);
 		
 	}
-	public void createAllPropertie (Map<String, Properties> listFile, File folder) {
+	
+	public void addPropertieCommun (Map<String, Properties> listFile, File folder) {
 		listFile.forEach((k, V) -> {
 			if (k.equals(nameFilePropertyCommun)) {
 
@@ -54,6 +59,18 @@ PropertieRepository propertieRepository;
 				propertieRepository.save(propertieCommun);
 			}
 		});
+	}
+
+	@Override
+	public List<Propertie> addAllPropertieSpec(Map<String, Properties> listFile, File folder) {
+
+		List<Propertie> listePropertie = new ArrayList<Propertie>();
+		listFile.forEach((k, v) -> {
+			Propertie p = new Propertie(0, k, "spec", folder);
+			propertieRepository.save(p);
+			listePropertie.add(p);
+		});
+		return listePropertie;
 	}
 
 }

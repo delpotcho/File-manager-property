@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -17,31 +18,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.sqli.stage.propertyfilemanager.dto.FileRepository;
 import com.sqli.stage.propertyfilemanager.dto.ParametreRepository;
-import com.sqli.stage.propertyfilemanager.dto.PropertieRepository;
 import com.sqli.stage.propertyfilemanager.dto.StatusRepository;
 import com.sqli.stage.propertyfilemanager.dto.ValueRepository;
-import com.sqli.stage.propertyfilemanager.entities.File;
 import com.sqli.stage.propertyfilemanager.entities.Parametre;
 import com.sqli.stage.propertyfilemanager.entities.Propertie;
 import com.sqli.stage.propertyfilemanager.entities.Status;
 import com.sqli.stage.propertyfilemanager.entities.Value;
+import com.sqli.stage.propertyfilemanager.service.PropertieService;
 
 @Component
 public class TraitementFile {
 
 	@org.springframework.beans.factory.annotation.Value("${propertie.commun.name}")
 	private String nameFilePropertyCommun;
-	@Autowired
-	private PropertieRepository propertieRepository;
-	@Autowired
-	private ParametreRepository parametreRepository;
+
 	@Autowired
 	private StatusRepository statusRepository;
 	@Autowired
 	private ValueRepository valueRepository;
-
+	@Autowired
+	ParametreRepository parametreRepository;
+	@Autowired
+	private PropertieService propertieService;
+	
 
 	public TraitementFile() {
 		super();
@@ -50,7 +50,7 @@ public class TraitementFile {
 
 	/*
 	 * 
-	 * method for scanned file property and ignore spacing and comments .
+	 * method for scanned file property .
 	 * 
 	 */
 
@@ -58,16 +58,30 @@ public class TraitementFile {
 		BufferedInputStream bis = new BufferedInputStream(file.getInputStream());
 		ZipInputStream zis = new ZipInputStream(bis);
 		ZipEntry zipEntry = zis.getNextEntry();
-		byte[] buffer = new byte[1024];
 		Properties filePropertie;
 		Map<String, Properties> listPropertie = new HashMap<String, Properties>();
 		while (zipEntry != null) {
-			String filePath = "C:/Users/pc 12/eclipse-workspace/PropertyFileManager/uploadFile" + java.io.File.separator
-					+ zipEntry.getName();
 			filePropertie = new Properties();
 			filePropertie.load(zis);
-			// System.out.println(filePropertie.toString());
 			listPropertie.put(zipEntry.getName(), filePropertie);
+			zipEntry = zis.getNextEntry();
+		}
+		zis.close();
+		return listPropertie;
+
+	}
+	/*
+	 * arshive file property
+	 */
+
+	public void arshiveFileProperty(MultipartFile file) throws IOException {
+		BufferedInputStream bis = new BufferedInputStream(file.getInputStream());
+		ZipInputStream zis = new ZipInputStream(bis);
+		ZipEntry zipEntry = zis.getNextEntry();
+		byte[] buffer = new byte[1024];
+		while (zipEntry != null) {
+			String filePath = "C:/Users/pc 12/eclipse-workspace/PropertyFileManager/uploadFile" + java.io.File.separator
+					+ zipEntry.getName();
 			if (!zipEntry.isDirectory()) {
 				FileOutputStream fos = new FileOutputStream(filePath);
 				int len;
@@ -84,13 +98,13 @@ public class TraitementFile {
 		}
 		zis.closeEntry();
 		zis.close();
-		return listPropertie;
 
 	}
+	/*
+	 * 
+	 */
 
-
-	public Map<String, Properties> addProtertieCommonToSpecifique(Map<String, Properties> listFile) {
-
+	public Map<String, Properties> addProtertieCommunToSpec(Map<String, Properties> listFile) {
 		Map<String, Properties> propertyCommun = new HashMap<String, Properties>();
 		Map<String, Properties> propertySpec = new HashMap<String, Properties>();
 		listFile.forEach((k, V) -> {
@@ -98,7 +112,7 @@ public class TraitementFile {
 				propertyCommun.put(k, V);
 			} else {
 				propertySpec.put(k, V);
-				List<Propertie> xx = propertieRepository.findAll();
+				List<Propertie> xx = propertieService.getAllPropertie();
 				xx.forEach((s) -> {
 					s.getId();
 				});
@@ -115,21 +129,9 @@ public class TraitementFile {
 				});
 			});
 		});
-//		System.out.println("++++++++++++++++++apres ++++++++++++++");
-//		System.out.println(propertySpec);
+
 		return propertySpec;
 
-	}
-
-	public List<Propertie> addPropertySpec(Map<String, Properties> listSpec, File folder) {
-
-		List<Propertie> listePropertie = new ArrayList<Propertie>();
-		listSpec.forEach((k, v) -> {
-			Propertie p = new Propertie(0, k, "spec", folder);
-			propertieRepository.save(p);
-			listePropertie.add(p);
-		});
-		return listePropertie;
 	}
 
 	public List<Parametre> addParametre(Map<String, Properties> listFileProperty) {
@@ -156,109 +158,77 @@ public class TraitementFile {
 //	  Compare specific files
 //	  
 //	 
-	Propertie propertieEntitie;
-	Parametre parametreEntitie;
+
+
 
 	public void compareFile(Map<String, Properties> listFileProperty, List<Propertie> prop, List<Parametre> param) {
-
 		Status statusDiff = new Status(0, "differant");
 		statusRepository.save(statusDiff);
-
 		Status statusNormal = new Status(0, "normal");
 		statusRepository.save(statusNormal);
 		Status statusOublie = new Status(0, "oublie");
 		statusRepository.save(statusOublie);
+		Propertie propertie = null;
+		Parametre parametre = null;
+		Value value;
+		for (Map.Entry<String, Properties> file1Spec : listFileProperty.entrySet()) {
+			for (Map.Entry<String, Properties> file2Spec : listFileProperty.entrySet()) {
+				if (!file1Spec.getKey().equals(file2Spec.getKey())) {
 
-		listFileProperty.forEach((nomFileSpec, propertieSpec) -> {
-
-			listFileProperty.forEach((nomFileSpec2, propertieSpec2) -> {
-
-				if (!nomFileSpec.equals(nomFileSpec2)) {
-
-					propertieSpec2.forEach((keyPropertie2, valuePropertie2) -> {
-
-						// System.out.println("nom propertie " + nomFileSpec2 + " de parametre " +
-						// keyPropertie2
-						// + " sa valeur " + valuePropertie2);
-
-						if (propertieSpec.containsKey(keyPropertie2)) {
-
-							if (!propertieSpec.get(keyPropertie2).equals(valuePropertie2)) {
-								prop.forEach((p) -> {
-									if (p.getName().equals(nomFileSpec2)) {
-										propertieEntitie = new Propertie();
-										propertieEntitie = p;
-									}
-								});
-								param.forEach((par) -> {
-
-									if (par.getParametrekey().equals(keyPropertie2)) {
-										parametreEntitie = new Parametre();
-										parametreEntitie = par;
-									}
-								});
-								// System.out.println("parametreEntitie "+ parametreEntitie.getParametrekey());
-								// System.out.println("propertieEntitie "+ propertieEntitie.getName());
-								Value v = new Value(valuePropertie2.toString(), parametreEntitie, statusDiff,
-										propertieEntitie);
-								valueRepository.save(v);
-
-								// System.out.println(" la valure different ' " + valuePropertie2 + " ' de key "
-								// +
-								// keyPropertie2
-								// + " dans file" + nomFileSpec2);
+					for (Entry propertieSpec2 : file2Spec.getValue().entrySet()) {
+						if (file1Spec.getValue().containsKey(propertieSpec2.getKey())) {
+							if (!file1Spec.getValue().get(propertieSpec2.getKey()).equals(propertieSpec2.getValue())) {
+								propertie = searchPropertie(prop, file2Spec.getKey());
+								parametre = searchParametre(param, propertieSpec2.getKey().toString());
+								value = new Value(propertieSpec2.getValue().toString(), parametre, statusDiff, propertie);
 
 							} else {
-								prop.forEach((p) -> {
-									if (p.getName().equals(nomFileSpec2)) {
-										propertieEntitie = new Propertie();
-										propertieEntitie = p;
-									}
-								});
-								param.forEach((par) -> {
-
-									if (par.getParametrekey().equals(keyPropertie2)) {
-										parametreEntitie = new Parametre();
-										parametreEntitie = par;
-									}
-								});
-								// System.out.println("parametreEntitie "+ parametreEntitie.getParametrekey());
-								// System.out.println("propertieEntitie "+ propertieEntitie.getName());
-								Value v = new Value(valuePropertie2.toString(), parametreEntitie, statusNormal,
-										propertieEntitie);
-								valueRepository.save(v);
-
+								propertie = searchPropertie(prop, file2Spec.getKey());
+								parametre = searchParametre(param, propertieSpec2.getKey().toString());
+								value = new Value(propertieSpec2.getValue().toString(), parametre, statusNormal, propertie);
 							}
 
 						} else {
-							prop.forEach((p) -> {
-								if (p.getName().equals(nomFileSpec2)) {
-									propertieEntitie = new Propertie();
-									propertieEntitie = p;
-								}
-							});
-							param.forEach((par) -> {
+							propertie = searchPropertie(prop, file2Spec.getKey());
+							parametre = searchParametre(param, propertieSpec2.getKey().toString());
+							value = new Value(propertieSpec2.getValue().toString(), parametre, statusOublie, propertie);
 
-								if (par.getParametrekey().equals(keyPropertie2)) {
-									parametreEntitie = new Parametre();
-									parametreEntitie = par;
-								}
-							});
-							// System.out.println("parametreEntitie "+ parametreEntitie.getParametrekey());
-							// System.out.println("propertieEntitie "+ propertieEntitie.getName());
-							Value v = new Value(valuePropertie2.toString(), parametreEntitie, statusOublie,
-									propertieEntitie);
-							valueRepository.save(v);
-
-							// System.out.println("le parametre oublie'" + keyPropertie2 + "' dans " +
-							// nomFileSpec);
-//
 						}
-					});
-				}
-			});
 
-		});
+						valueRepository.save(value);
+
+					}
+				}
+
+			}
+
+		}
+
+	}
+
+	public Propertie searchPropertie(List<Propertie> prop, String keyPropertie) {
+		Propertie propertieEntitie = new Propertie();
+		for (Propertie p : prop) {
+
+			if (p.getName().equals(keyPropertie)) {
+
+				propertieEntitie = p;
+			}
+		}
+		return propertieEntitie;
+
+	}
+
+	public Parametre searchParametre(List<Parametre> pram, String keyParam) {
+		Parametre parametreEntitie = new Parametre();
+		for (Parametre par : pram) {
+
+			if (par.getParametrekey().equals(keyParam)) {
+
+				parametreEntitie = par;
+			}
+		}
+		return parametreEntitie;
 
 	}
 
