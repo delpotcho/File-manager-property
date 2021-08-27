@@ -105,10 +105,15 @@ public class TraitementFile {
 		Map<String, Properties> propertyCommun = new HashMap<String, Properties>();
 		Map<String, Properties> propertySpec = new HashMap<String, Properties>();
 		listFile.forEach((key, value) -> {
-			if (key.equals(nameFilePropertyCommun)) {
+			if (key.matches("(.*)"+nameFilePropertyCommun)) {
+				
+				System.out.println(key +value);
 				propertyCommun.put(key, value);
 			} else {
+				if (key.matches("(.*).properties")) {
+				
 				propertySpec.put(key, value);
+				}
 			}
 		});
 		propertyCommun.forEach((kCommun, vCommun) -> vCommun.forEach((k, v) ->

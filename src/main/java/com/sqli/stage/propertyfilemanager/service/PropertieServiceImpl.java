@@ -53,7 +53,7 @@ public class PropertieServiceImpl implements PropertieService {
 
 	public void addPropertieCommun(Map<String, Properties> listFile, File folder) {
 		listFile.forEach((k, v) -> {
-			if (k.equals(nameFilePropertyCommun)) {
+			if (k.matches("(.*)"+nameFilePropertyCommun)) {
 
 				Propertie propertieCommun = new Propertie(0, k, "Commun", folder);
 				propertieRepository.save(propertieCommun);
