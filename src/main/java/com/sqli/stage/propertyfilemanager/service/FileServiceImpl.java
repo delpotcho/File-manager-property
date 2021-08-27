@@ -46,7 +46,7 @@ public class FileServiceImpl implements FileService {
 
 	}
 	@Override
-	public File addAllFile(MultipartFile file) {
+	public File addAllFiles(MultipartFile file) {
 		File folder = new File(0, file.getOriginalFilename(), new Date());
 		fileRepository.save(folder);
 		return folder;

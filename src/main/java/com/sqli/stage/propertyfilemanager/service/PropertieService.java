@@ -21,5 +21,7 @@ public interface PropertieService {
 	public List<Propertie> addAllPropertieSpec(Map<String, Properties> listFile, File folder);
 
 	public void addPropertieCommun(Map<String, Properties> listFile, File folder);
+	
+	public Propertie searchPropertie(List<Propertie> prop, String keyPropertie);
 
 }

@@ -18,6 +18,6 @@ public interface FileService {
 
 	public void updateFile(File file);
 
-	public File addAllFile(MultipartFile file);
+	public File addAllFiles(MultipartFile file);
 
 }

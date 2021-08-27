@@ -4,27 +4,37 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.sqli.stage.propertyfilemanager.compare.TraitementFile;
 import com.sqli.stage.propertyfilemanager.entities.File;
 import com.sqli.stage.propertyfilemanager.entities.Parametre;
 import com.sqli.stage.propertyfilemanager.entities.Propertie;
+import com.sqli.stage.propertyfilemanager.entities.Status;
 import com.sqli.stage.propertyfilemanager.service.FileService;
+import com.sqli.stage.propertyfilemanager.service.ParametreService;
 import com.sqli.stage.propertyfilemanager.service.PropertieService;
+import com.sqli.stage.propertyfilemanager.service.StatusService;
 
 @Component
 public class ComparePropertieFileFacade {
-	
+
 	@Autowired
 	private TraitementFile traitementFile;
 
 	@Autowired
-	PropertieService propertieService;
+	private PropertieService propertieService;
 
 	@Autowired
-	FileService filleService;
+	private ParametreService parametreService;
+
+	@Autowired
+	private FileService filleService;
+	@Autowired
+	StatusService statusService;
 
 	public ComparePropertieFileFacade() {
 		super();
@@ -32,7 +42,7 @@ public class ComparePropertieFileFacade {
 	}
 
 	public File comparePropertieFile(MultipartFile file) {
-		File folder = filleService.addAllFile(file);
+		File folder = filleService.addAllFiles(file);
 		Map<String, Properties> filesProperty = null;
 		try {
 			filesProperty = traitementFile.scannedFile(file);
@@ -47,9 +57,10 @@ public class ComparePropertieFileFacade {
 
 		List<Propertie> prop = propertieService.addAllPropertieSpec(fileSpec, folder);
 
-		List<Parametre> param = traitementFile.addParametre(fileSpec);
+		List<Parametre> param = parametreService.addAllParametres(fileSpec);
+		List<Status> status = statusService.addAllStatus();
 
-		traitementFile.compareFile(fileSpec, prop, param);
+				traitementFile.compareFile(fileSpec, prop, param, status);
 
 		return folder;
 	}
