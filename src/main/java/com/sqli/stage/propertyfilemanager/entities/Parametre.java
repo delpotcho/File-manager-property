@@ -19,7 +19,7 @@ public class Parametre {
 	private long parametreId;
 	private String parametrekey;
 	@OneToMany(mappedBy = "parametre")
-	private List<Property> values;
+	private List<Property> property;
 
 	public long getId() {
 		return parametreId;
@@ -30,11 +30,11 @@ public class Parametre {
 	}
 	@JsonIgnore
 	public List<Property> getValues() {
-		return values;
+		return property;
 	}
 
 	public void setValues(List<Property> values) {
-		this.values = values;
+		this.property = values;
 	}
 
 	public String getParametrekey() {

@@ -22,9 +22,9 @@ public class Fichier {
 	private String type;
 	@JsonIgnore
 	@ManyToOne
-	private Folder file;
-	@OneToMany(mappedBy = "propertie")
-	private List<Property> values;
+	private Folder folder;
+	@OneToMany(mappedBy = "file")
+	private List<Property> property;
 
 	public long getId() {
 		return properieId;
@@ -35,11 +35,11 @@ public class Fichier {
 	}
 
 	public Folder getFile() {
-		return file;
+		return folder;
 	}
 
 	public void setFile(Folder file) {
-		this.file = file;
+		this.folder = file;
 	}
 
 	public String getName() {
@@ -51,11 +51,11 @@ public class Fichier {
 	}
 
 	public List<Property> getValues() {
-		return values;
+		return property;
 	}
 
 	public void setValues(List<Property> values) {
-		this.values = values;
+		this.property = values;
 	}
 
 	public String getType() {
@@ -71,7 +71,7 @@ public class Fichier {
 		this.properieId = properieId;
 		this.name = name;
 		this.type = type;
-		this.file = file;
+		this.folder = file;
 	
 	}
 

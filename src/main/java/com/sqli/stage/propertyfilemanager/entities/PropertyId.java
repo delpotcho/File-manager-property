@@ -12,16 +12,16 @@ import org.springframework.stereotype.Component;
 public class PropertyId implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private long propertieId;
+	private long fileId;
 	private long parametreId;
 	private long statusId;
 
 	public long getProperieId() {
-		return propertieId;
+		return fileId;
 	}
 
 	public void setProperieId(long properieId) {
-		this.propertieId = properieId;
+		this.fileId = properieId;
 	}
 
 	public long getParametreId() {
@@ -42,7 +42,7 @@ public class PropertyId implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(parametreId, propertieId, statusId);
+		return Objects.hash(parametreId, fileId, statusId);
 	}
 
 	@Override
@@ -54,12 +54,12 @@ public class PropertyId implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		PropertyId other = (PropertyId) obj;
-		return parametreId == other.parametreId && propertieId == other.propertieId && statusId == other.statusId;
+		return parametreId == other.parametreId && fileId == other.fileId && statusId == other.statusId;
 	}
 
 	public PropertyId(long properieId, long parametreId, long statusId) {
 		super();
-		this.propertieId = properieId;
+		this.fileId = properieId;
 		this.parametreId = parametreId;
 		this.statusId = statusId;
 	}

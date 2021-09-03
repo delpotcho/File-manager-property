@@ -17,8 +17,8 @@ public class Folder {
 	private String name;
 	private Date date;
 
-	@OneToMany(mappedBy = "file")
-	private List<Fichier> properties;
+	@OneToMany(mappedBy = "folder")
+	private List<Fichier> file;
 
 	public long getId() {
 		return id;
@@ -37,11 +37,11 @@ public class Folder {
 	}
 
 	public List<Fichier> getProperties() {
-		return properties;
+		return file;
 	}
 
 	public void setProperties(List<Fichier> properties) {
-		this.properties = properties;
+		this.file = properties;
 	}
 
 	public Date getDate() {
@@ -70,7 +70,7 @@ public class Folder {
 		this.id = id;
 		this.name = name;
 		this.date = date;
-		this.properties = properties;
+		this.file = properties;
 	}
 
 }

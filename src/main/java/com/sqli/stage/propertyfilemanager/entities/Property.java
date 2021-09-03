@@ -29,9 +29,9 @@ public class Property {
 	
 	@JsonIgnore
 	@ManyToOne
-	@MapsId("propertieId")
-	@JoinColumn(name = "propertie_id")
-	private Fichier propertie;
+	@MapsId("fileId")
+	@JoinColumn(name = "file_id")
+	private Fichier file;
 
 	
 
@@ -68,11 +68,11 @@ public class Property {
 	}
 
 	public Fichier getPropertie() {
-		return propertie;
+		return file;
 	}
 
 	public void setPropertie(Fichier propertie) {
-		this.propertie = propertie;
+		this.file = propertie;
 	}
 
 	public Property(String name, Parametre parametre, Status status, Fichier propertie) {
@@ -81,7 +81,7 @@ public class Property {
 
 		this.parametre = parametre;
 		this.status = status;
-		this.propertie = propertie;
+		this.file = propertie;
 	}
 
 	public Property() {
