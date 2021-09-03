@@ -1,23 +1,28 @@
 package com.sqli.stage.propertyfilemanager.service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.Properties;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import com.sqli.stage.propertyfilemanager.entities.File;
+import com.sqli.stage.propertyfilemanager.entities.Folder;
+import com.sqli.stage.propertyfilemanager.entities.Fichier;
 
 public interface FileService {
-	public List<File> getAllFille();
 
-	public Optional<File> getFileById(Long id);
+	public List<Fichier> getAllFile();
 
-	public void deleteFile(File file);
+	public Fichier getFileById(Long id);
 
-	public void addFile(File file);
+	public void deleteFile(Fichier propertie);
 
-	public void updateFile(File file);
+	public void addFile(Fichier propertie);
 
-	public File addAllFiles(MultipartFile file);
+	public void updateFile(Fichier propertie);
+
+	public void addFileCommun(Map<String, Properties> listFile, Folder folder);
+
+	public List<Fichier> addAllFileSpec(Map<String, Properties> listFile, Folder folder);
+
+	public Fichier searchFile(List<Fichier> prop, String keyPropertie);
 
 }

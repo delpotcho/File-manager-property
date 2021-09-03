@@ -10,23 +10,23 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sqli.stage.propertyfilemanager.dto.ParametreRepository;
+import com.sqli.stage.propertyfilemanager.dao.ParametreRepository;
 import com.sqli.stage.propertyfilemanager.entities.Parametre;
 
 @Service
-public class ParametreServiceImpl implements ParametreService{
+public class ParametreServiceImpl implements ParametreService {
 	@Autowired
-ParametreRepository parametreRepository;
-	
+	private ParametreRepository parametreRepository;
+
 	@Override
 	public List<Parametre> getAllParametre() {
-		
-		return parametreRepository.findAll(); 
+
+		return parametreRepository.findAll();
 	}
 
 	@Override
 	public Parametre getParametreById(Long id) {
-		
+
 		return parametreRepository.getById(id);
 	}
 
@@ -37,8 +37,8 @@ ParametreRepository parametreRepository;
 
 	@Override
 	public void createParametre(Parametre parametre) {
-	parametreRepository.save(parametre);
-		
+		parametreRepository.save(parametre);
+
 	}
 
 	@Override
@@ -65,6 +65,7 @@ ParametreRepository parametreRepository;
 
 		return listParametreEntities;
 	}
+
 	public Parametre searchParametre(List<Parametre> pram, String keyParam) {
 		Parametre parametreEntitie = new Parametre();
 		for (Parametre par : pram) {

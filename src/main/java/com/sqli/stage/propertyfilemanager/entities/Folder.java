@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 @Entity
-public class File {
+public class Folder {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
@@ -18,7 +18,7 @@ public class File {
 	private Date date;
 
 	@OneToMany(mappedBy = "file")
-	private List<Propertie> properties;
+	private List<Fichier> properties;
 
 	public long getId() {
 		return id;
@@ -36,11 +36,11 @@ public class File {
 		this.name = name;
 	}
 
-	public List<Propertie> getProperties() {
+	public List<Fichier> getProperties() {
 		return properties;
 	}
 
-	public void setProperties(List<Propertie> properties) {
+	public void setProperties(List<Fichier> properties) {
 		this.properties = properties;
 	}
 
@@ -52,7 +52,7 @@ public class File {
 		this.date = date;
 	}
 
-	public File(long id, String name, Date date) {
+	public Folder(long id, String name, Date date) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -60,12 +60,12 @@ public class File {
 
 	}
 
-	public File() {
+	public Folder() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public File(long id, String name, Date date, List<Propertie> properties) {
+	public Folder(long id, String name, Date date, List<Fichier> properties) {
 		super();
 		this.id = id;
 		this.name = name;

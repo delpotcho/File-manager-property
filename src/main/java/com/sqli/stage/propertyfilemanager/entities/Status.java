@@ -20,7 +20,7 @@ public class Status {
 	private String type;
 	@JsonIgnore
 	@OneToMany(mappedBy = "status")
-	private List<Value> values;
+	private List<Property> values;
 
 	public long getId() {
 		return statusId;
@@ -46,11 +46,11 @@ public class Status {
 		this.statusId = statusId;
 	}
 
-	public List<Value> getValues() {
+	public List<Property> getValues() {
 		return values;
 	}
 
-	public void setValues(List<Value> values) {
+	public void setValues(List<Property> values) {
 		this.values = values;
 	}
 

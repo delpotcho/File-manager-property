@@ -16,13 +16,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sqli.stage.propertyfilemanager.entities.Parametre;
-import com.sqli.stage.propertyfilemanager.entities.Propertie;
+import com.sqli.stage.propertyfilemanager.entities.Fichier;
 import com.sqli.stage.propertyfilemanager.entities.Status;
-import com.sqli.stage.propertyfilemanager.entities.Value;
+import com.sqli.stage.propertyfilemanager.entities.Property;
 import com.sqli.stage.propertyfilemanager.service.ParametreService;
-import com.sqli.stage.propertyfilemanager.service.PropertieService;
+import com.sqli.stage.propertyfilemanager.service.FileService;
 import com.sqli.stage.propertyfilemanager.service.StatusService;
-import com.sqli.stage.propertyfilemanager.service.ValueService;
+import com.sqli.stage.propertyfilemanager.service.PropertyService;
 
 @Component
 public class TraitementFile {
@@ -33,9 +33,9 @@ public class TraitementFile {
 	@Autowired
 	private StatusService statusService;
 	@Autowired
-	private ValueService valueService;
+	private PropertyService valueService;
 	@Autowired
-	private PropertieService propertieService;
+	private FileService propertieService;
 
 	@Autowired
 	private ParametreService parametreService;
@@ -51,8 +51,8 @@ public class TraitementFile {
 	 * 
 	 */
 
-	public Map<String, Properties> scannedFile(MultipartFile file) throws IOException {
-		BufferedInputStream bis = new BufferedInputStream(file.getInputStream());
+	public Map<String, Properties> scannedFile(MultipartFile folders) throws IOException {
+		BufferedInputStream bis = new BufferedInputStream(folders.getInputStream());
 		ZipInputStream zis = new ZipInputStream(bis);
 		ZipEntry zipEntry = zis.getNextEntry();
 		Properties filePropertie;
@@ -71,8 +71,8 @@ public class TraitementFile {
 	 * arshive file property
 	 */
 
-	public void arshiveFileProperty(MultipartFile file) throws IOException {
-		BufferedInputStream bis = new BufferedInputStream(file.getInputStream());
+	public void arshiveFileProperty(MultipartFile folders) throws IOException {
+		BufferedInputStream bis = new BufferedInputStream(folders.getInputStream());
 		ZipInputStream zis = new ZipInputStream(bis);
 		ZipEntry zipEntry = zis.getNextEntry();
 		byte[] buffer = new byte[1024];
@@ -102,30 +102,31 @@ public class TraitementFile {
 	 */
 
 	public Map<String, Properties> addProtertieCommunToSpec(Map<String, Properties> listFile) {
-		Map<String, Properties> propertyCommun = new HashMap<String, Properties>();
-		Map<String, Properties> propertySpec = new HashMap<String, Properties>();
+		Map<String, Properties> fileCommun = new HashMap<String, Properties>();
+		Map<String, Properties> fileSpec = new HashMap<String, Properties>();
 		listFile.forEach((key, value) -> {
-			if (key.matches("(.*)"+nameFilePropertyCommun)) {
-				
-				System.out.println(key +value);
-				propertyCommun.put(key, value);
+			
+			if (key.matches("(.*)" + nameFilePropertyCommun)) {
+
+				System.out.println(key + value);
+				fileCommun.put(key, value);
 			} else {
 				if (key.matches("(.*).properties")) {
-				
-				propertySpec.put(key, value);
+
+					fileSpec.put(key, value);
 				}
 			}
 		});
-		propertyCommun.forEach((kCommun, vCommun) -> vCommun.forEach((k, v) ->
+		fileCommun.forEach((kCommun, vCommun) -> vCommun.forEach((k, v) ->
 
-		propertySpec.forEach((kspec, vSpec) -> {
+		fileSpec.forEach((kspec, vSpec) -> {
 			if (!vSpec.containsKey(k)) {
 				vSpec.put(k, v);
 
 			}
 		})));
 
-		return propertySpec;
+		return fileSpec;
 
 	}
 
@@ -135,7 +136,7 @@ public class TraitementFile {
 //	  
 //	 
 
-	public void compareFile(Map<String, Properties> listFileProperty, List<Propertie> prop, List<Parametre> param,
+	public void compareFile(Map<String, Properties> listFileProperty, List<Fichier> prop, List<Parametre> param,
 			List<Status> stat) {
 		String typeStatus;
 		for (Map.Entry<String, Properties> file1Spec : listFileProperty.entrySet()) {
@@ -153,11 +154,16 @@ public class TraitementFile {
 						} else {
 							typeStatus = "oublie";
 						}
-						Propertie propertie = propertieService.searchPropertie(prop, file2Spec.getKey());
-						Parametre parametre = parametreService.searchParametre(param, propertieSpec2.getKey().toString());
+						Fichier propertie = propertieService.searchFile(prop, file2Spec.getKey());
+						Parametre parametre = parametreService.searchParametre(param,
+								propertieSpec2.getKey().toString());
+						
+						
+						
+						
 						Status status = statusService.searchStatus(stat, typeStatus);
-						Value value = new Value(propertieSpec2.getValue().toString(), parametre, status, propertie);
-						valueService.addValue(value);
+						Property value = new Property(propertieSpec2.getValue().toString(), parametre, status, propertie);
+						valueService.addProperty(value);
 
 					}
 				}

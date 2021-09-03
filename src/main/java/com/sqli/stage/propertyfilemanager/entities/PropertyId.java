@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Embeddable
-public class ValueId implements Serializable {
+public class PropertyId implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private long propertieId;
@@ -53,18 +53,18 @@ public class ValueId implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ValueId other = (ValueId) obj;
+		PropertyId other = (PropertyId) obj;
 		return parametreId == other.parametreId && propertieId == other.propertieId && statusId == other.statusId;
 	}
 
-	public ValueId(long properieId, long parametreId, long statusId) {
+	public PropertyId(long properieId, long parametreId, long statusId) {
 		super();
 		this.propertieId = properieId;
 		this.parametreId = parametreId;
 		this.statusId = statusId;
 	}
 
-	public ValueId() {
+	public PropertyId() {
 		super();
 
 	}

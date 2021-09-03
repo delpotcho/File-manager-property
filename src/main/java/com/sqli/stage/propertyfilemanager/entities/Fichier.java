@@ -12,7 +12,7 @@ import javax.persistence.OneToMany;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class Propertie {
+public class Fichier {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,9 +22,9 @@ public class Propertie {
 	private String type;
 	@JsonIgnore
 	@ManyToOne
-	private File file;
+	private Folder file;
 	@OneToMany(mappedBy = "propertie")
-	private List<Value> values;
+	private List<Property> values;
 
 	public long getId() {
 		return properieId;
@@ -34,11 +34,11 @@ public class Propertie {
 		this.properieId = id;
 	}
 
-	public File getFile() {
+	public Folder getFile() {
 		return file;
 	}
 
-	public void setFile(File file) {
+	public void setFile(Folder file) {
 		this.file = file;
 	}
 
@@ -50,11 +50,11 @@ public class Propertie {
 		this.name = name;
 	}
 
-	public List<Value> getValues() {
+	public List<Property> getValues() {
 		return values;
 	}
 
-	public void setValues(List<Value> values) {
+	public void setValues(List<Property> values) {
 		this.values = values;
 	}
 
@@ -66,7 +66,7 @@ public class Propertie {
 		this.type = type;
 	}
 
-	public Propertie(long properieId, String name, String type, File file) {
+	public Fichier(long properieId, String name, String type, Folder file) {
 		super();
 		this.properieId = properieId;
 		this.name = name;
@@ -75,7 +75,7 @@ public class Propertie {
 	
 	}
 
-	public Propertie() {
+	public Fichier() {
 		super();
 		
 	}

@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sqli.stage.propertyfilemanager.compare.TraitementFile;
-import com.sqli.stage.propertyfilemanager.entities.File;
+import com.sqli.stage.propertyfilemanager.entities.Folder;
 import com.sqli.stage.propertyfilemanager.entities.Parametre;
-import com.sqli.stage.propertyfilemanager.entities.Propertie;
+import com.sqli.stage.propertyfilemanager.entities.Fichier;
 import com.sqli.stage.propertyfilemanager.entities.Status;
-import com.sqli.stage.propertyfilemanager.service.FileService;
+import com.sqli.stage.propertyfilemanager.service.FolderService;
 import com.sqli.stage.propertyfilemanager.service.ParametreService;
-import com.sqli.stage.propertyfilemanager.service.PropertieService;
+import com.sqli.stage.propertyfilemanager.service.FileService;
 import com.sqli.stage.propertyfilemanager.service.StatusService;
 
 @Component
@@ -26,41 +26,41 @@ public class ComparePropertieFileFacade {
 	private TraitementFile traitementFile;
 
 	@Autowired
-	private PropertieService propertieService;
+	private FileService fileService;
 
 	@Autowired
 	private ParametreService parametreService;
 
 	@Autowired
-	private FileService filleService;
+	private FolderService folderService;
 	@Autowired
-	StatusService statusService;
+	private StatusService statusService;
 
 	public ComparePropertieFileFacade() {
 		super();
 
 	}
 
-	public File comparePropertieFile(MultipartFile file) {
-		File folder = filleService.addAllFiles(file);
+	public Folder comparePropertieFile(MultipartFile folders) {
+		Folder folder = folderService.addAllFolders(folders);
 		Map<String, Properties> filesProperty = null;
 		try {
-			filesProperty = traitementFile.scannedFile(file);
-			traitementFile.arshiveFileProperty(file);
+			filesProperty = traitementFile.scannedFile(folders);
+			traitementFile.arshiveFileProperty(folders);
 		} catch (IOException e) {
 
 			e.printStackTrace();
 		}
-		propertieService.addPropertieCommun(filesProperty, folder);
+		fileService.addFileCommun(filesProperty, folder);
 
 		Map<String, Properties> fileSpec = traitementFile.addProtertieCommunToSpec(filesProperty);
 
-		List<Propertie> prop = propertieService.addAllPropertieSpec(fileSpec, folder);
+		List<Fichier> filez = fileService.addAllFileSpec(fileSpec, folder);
 
 		List<Parametre> param = parametreService.addAllParametres(fileSpec);
 		List<Status> status = statusService.addAllStatus();
 
-				traitementFile.compareFile(fileSpec, prop, param, status);
+				traitementFile.compareFile(fileSpec, filez, param, status);
 
 		return folder;
 	}

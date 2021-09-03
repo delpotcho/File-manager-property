@@ -18,6 +18,7 @@ public interface ParametreService {
 	public void updateParametre(Parametre parametre);
 
 	public List<Parametre> addAllParametres(Map<String, Properties> listFileProperties);
+
 	public Parametre searchParametre(List<Parametre> pram, String keyParam);
 
 }

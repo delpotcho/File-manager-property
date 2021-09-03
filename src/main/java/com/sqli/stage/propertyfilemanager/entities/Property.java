@@ -10,12 +10,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 
-public class Value {
+public class Property {
 
-	private String name;
+	private String value;
 	@JsonIgnore
 	@EmbeddedId
-	private ValueId valueId = new ValueId();
+	private PropertyId valueId = new PropertyId();
 
 	@ManyToOne
 	@MapsId("parametreId")
@@ -26,25 +26,28 @@ public class Value {
 	@MapsId("statusId")
 	@JoinColumn(name = "status_id")
 	private Status status;
+	
 	@JsonIgnore
 	@ManyToOne
 	@MapsId("propertieId")
 	@JoinColumn(name = "propertie_id")
-	private Propertie propertie;
+	private Fichier propertie;
 
-	public String getName() {
-		return name;
+	
+
+	public String getValue() {
+		return value;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setValue(String value) {
+		this.value = value;
 	}
 
-	public ValueId getValueId() {
+	public PropertyId getValueId() {
 		return valueId;
 	}
 
-	public void setValueId(ValueId valueId) {
+	public void setValueId(PropertyId valueId) {
 		this.valueId = valueId;
 	}
 
@@ -64,24 +67,24 @@ public class Value {
 		this.status = status;
 	}
 
-	public Propertie getPropertie() {
+	public Fichier getPropertie() {
 		return propertie;
 	}
 
-	public void setPropertie(Propertie propertie) {
+	public void setPropertie(Fichier propertie) {
 		this.propertie = propertie;
 	}
 
-	public Value(String name, Parametre parametre, Status status, Propertie propertie) {
+	public Property(String name, Parametre parametre, Status status, Fichier propertie) {
 		super();
-		this.name = name;
+		this.value = name;
 
 		this.parametre = parametre;
 		this.status = status;
 		this.propertie = propertie;
 	}
 
-	public Value() {
+	public Property() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

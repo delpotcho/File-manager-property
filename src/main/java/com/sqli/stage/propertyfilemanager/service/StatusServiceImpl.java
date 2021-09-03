@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sqli.stage.propertyfilemanager.dto.StatusRepository;
+import com.sqli.stage.propertyfilemanager.dao.StatusRepository;
 import com.sqli.stage.propertyfilemanager.entities.Status;
 
 @Service

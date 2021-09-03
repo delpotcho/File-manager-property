@@ -6,7 +6,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -22,17 +21,22 @@ public class PropertyFileManagerApplication  {
 	@Bean
 	public Docket swaggerConfiguration() {
 		return new Docket(DocumentationType.SWAGGER_2)
-				.select().paths(PathSelectors
-				.ant("/api/*")).build()
+				.select()
+
+				.build()
 				.apiInfo(apiDetails());
 	}
 
 	private ApiInfo apiDetails() {
-		return new ApiInfo("Api CompreFileProperties", 
-				"Api for Sqli Morocco Oujda", "1.0", "free to use"
+		return new ApiInfo(
+				"Api CompreFileProperties", 
+				"Api for Sqli Morocco Oujda", 
+				"1.0", 
+				"free to use"
 				,new springfox.documentation.service.Contact("sqli oujda","https://www.sqli.com/Accueil/Groupe/Agences/SQLI-Maroc", " commercial-maroc@sqli.com")
 				,"Api License"
-				,"https://www.sqli.com/Accueil/Groupe/Agences/SQLI-Maroc", Collections.emptyList());
+				,"https://www.sqli.com/Accueil/Groupe/Agences/SQLI-Maroc", 
+				Collections.emptyList());
 
 	}
 

@@ -1,4 +1,4 @@
-package com.sqli.stage.propertyfilemanager.dto;
+package com.sqli.stage.propertyfilemanager.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
