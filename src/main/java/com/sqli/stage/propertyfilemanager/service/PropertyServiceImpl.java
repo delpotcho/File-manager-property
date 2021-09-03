@@ -6,24 +6,24 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sqli.stage.propertyfilemanager.dao.ValueRepository;
+import com.sqli.stage.propertyfilemanager.dao.PropertyRepository;
 import com.sqli.stage.propertyfilemanager.entities.Property;
 @Service
 public class PropertyServiceImpl implements PropertyService {
 	@Autowired
-	private ValueRepository valueRepository;
+	private PropertyRepository propertyRepository;
 
 	
 	@Override
 	public List<Property> getAllProperty() {
 
-		return valueRepository.findAll();
+		return propertyRepository.findAll();
 	}
 
 
 	@Override
 	public void deleteProperty(Property value) {
-		valueRepository.delete(value);
+		propertyRepository.delete(value);
 		
 
 	}
@@ -31,14 +31,14 @@ public class PropertyServiceImpl implements PropertyService {
 	
 	@Override
 	public void addProperty(Property value) {
-		valueRepository.save(value);
+		propertyRepository.save(value);
 
 	}
 
 
 	@Override
 	public void updateProperty(Property value) {
-		valueRepository.save(value);
+		propertyRepository.save(value);
 	}
 
 }

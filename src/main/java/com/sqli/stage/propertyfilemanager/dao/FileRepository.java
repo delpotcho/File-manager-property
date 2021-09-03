@@ -1,11 +1,9 @@
 package com.sqli.stage.propertyfilemanager.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-import com.sqli.stage.propertyfilemanager.entities.Folder;
-@Repository
-public interface FileRepository extends JpaRepository<Folder, Long> {
-	
+import com.sqli.stage.propertyfilemanager.entities.Fichier;
+
+public interface FileRepository extends JpaRepository<Fichier, Long> {
 
 }

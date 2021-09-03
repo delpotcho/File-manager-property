@@ -33,9 +33,9 @@ public class TraitementFile {
 	@Autowired
 	private StatusService statusService;
 	@Autowired
-	private PropertyService valueService;
+	private PropertyService propertyService;
 	@Autowired
-	private FileService propertieService;
+	private FileService fileService;
 
 	@Autowired
 	private ParametreService parametreService;
@@ -154,7 +154,7 @@ public class TraitementFile {
 						} else {
 							typeStatus = "oublie";
 						}
-						Fichier propertie = propertieService.searchFile(prop, file2Spec.getKey());
+						Fichier propertie = fileService.searchFile(prop, file2Spec.getKey());
 						Parametre parametre = parametreService.searchParametre(param,
 								propertieSpec2.getKey().toString());
 						
@@ -163,7 +163,7 @@ public class TraitementFile {
 						
 						Status status = statusService.searchStatus(stat, typeStatus);
 						Property value = new Property(propertieSpec2.getValue().toString(), parametre, status, propertie);
-						valueService.addProperty(value);
+						propertyService.addProperty(value);
 
 					}
 				}

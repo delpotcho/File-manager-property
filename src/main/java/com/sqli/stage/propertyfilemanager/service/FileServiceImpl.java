@@ -1,6 +1,5 @@
 package com.sqli.stage.propertyfilemanager.service;
 
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,77 +9,70 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.sqli.stage.propertyfilemanager.dao.PropertieRepository;
-import com.sqli.stage.propertyfilemanager.entities.Folder;
+import com.sqli.stage.propertyfilemanager.dao.FileRepository;
 import com.sqli.stage.propertyfilemanager.entities.Fichier;
+import com.sqli.stage.propertyfilemanager.entities.Folder;
 
 @Service
 public class FileServiceImpl implements FileService {
 	@Autowired
-	private PropertieRepository propertieRepository;
+	private FileRepository fileRepository;
 
 	@Value("${propertie.commun.name}")
 	private String nameFilePropertyCommun;
 
-
 	@Override
 	public List<Fichier> getAllFile() {
 
-		return propertieRepository.findAll();
+		return fileRepository.findAll();
 	}
 
-	
 	@Override
 	public Fichier getFileById(Long id) {
 
-		return propertieRepository.getById(id);
+		return fileRepository.getById(id);
 	}
 
-	
 	@Override
 	public void deleteFile(Fichier propertie) {
-		propertieRepository.delete(propertie);
+		fileRepository.delete(propertie);
 
 	}
 
-	
 	@Override
 	public void addFile(Fichier propertie) {
-		propertieRepository.save(propertie);
+		fileRepository.save(propertie);
 
 	}
 
-	
 	@Override
 	public void updateFile(Fichier propertie) {
-		propertieRepository.save(propertie);
+		fileRepository.save(propertie);
 
 	}
 
 	public void addFileCommun(Map<String, Properties> listFile, Folder folder) {
 		listFile.forEach((k, v) -> {
-			if (k.matches("(.*)"+nameFilePropertyCommun)) {
+			if (k.matches("(.*)" + nameFilePropertyCommun)) {
 
 				Fichier propertieCommun = new Fichier(0, k, "Commun", folder);
-				propertieRepository.save(propertieCommun);
+				fileRepository.save(propertieCommun);
 			}
 		});
 	}
-
 
 	@Override
 	public List<Fichier> addAllFileSpec(Map<String, Properties> listFile, Folder folder) {
 
 		List<Fichier> listePropertie = new ArrayList<Fichier>();
 		listFile.forEach((k, v) -> {
-		
+
 			Fichier p = new Fichier(0, k, "spec", folder);
-			propertieRepository.save(p);
+			fileRepository.save(p);
 			listePropertie.add(p);
 		});
 		return listePropertie;
 	}
-
 
 	@Override
 	public Fichier searchFile(List<Fichier> prop, String keyPropertie) {

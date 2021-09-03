@@ -37,19 +37,20 @@ public class FileController {
 	public ResponseEntity<Object> uploadFileZip(@RequestParam("file") MultipartFile file) {
 
 		String fileName = file.getOriginalFilename().toUpperCase();
-		try {
+		
 			if (fileName.endsWith(".ZIP")) {
 				Folder folder = comparePropertieFileFacade.comparePropertieFile(file);
 
 				return new ResponseEntity<>(folder.getId(), HttpStatus.OK);
+			
 
 			} else {
 				return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
-			}
-
-		} catch (Exception e) {
-			return new ResponseEntity<Object>(HttpStatus.NOT_ACCEPTABLE);
 		}
+//
+//		} catch (Exception e) {
+//			return new ResponseEntity<Object>(HttpStatus.NOT_ACCEPTABLE);
+//		}
 
 	}
 

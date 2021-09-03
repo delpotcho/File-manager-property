@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sqli.stage.propertyfilemanager.compare.TraitementFile;
+import com.sqli.stage.propertyfilemanager.entities.Fichier;
 import com.sqli.stage.propertyfilemanager.entities.Folder;
 import com.sqli.stage.propertyfilemanager.entities.Parametre;
-import com.sqli.stage.propertyfilemanager.entities.Fichier;
 import com.sqli.stage.propertyfilemanager.entities.Status;
+import com.sqli.stage.propertyfilemanager.service.FileService;
 import com.sqli.stage.propertyfilemanager.service.FolderService;
 import com.sqli.stage.propertyfilemanager.service.ParametreService;
-import com.sqli.stage.propertyfilemanager.service.FileService;
 import com.sqli.stage.propertyfilemanager.service.StatusService;
 
 @Component
@@ -51,16 +51,17 @@ public class ComparePropertieFileFacade {
 
 			e.printStackTrace();
 		}
-		fileService.addFileCommun(filesProperty, folder);
+		// fileService.addFileCommun(filesProperty, folder);
 
 		Map<String, Properties> fileSpec = traitementFile.addProtertieCommunToSpec(filesProperty);
 
 		List<Fichier> filez = fileService.addAllFileSpec(fileSpec, folder);
 
 		List<Parametre> param = parametreService.addAllParametres(fileSpec);
+
 		List<Status> status = statusService.addAllStatus();
 
-				traitementFile.compareFile(fileSpec, filez, param, status);
+		traitementFile.compareFile(fileSpec, filez, param, status);
 
 		return folder;
 	}
